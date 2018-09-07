@@ -1,3 +1,3 @@
-# User Bundle
+# Personal Bundle
 
-Provides miscellaneous methods for user-specific tasks at wbgym.
+Provides miscellaneous methods for member-specific tasks at wbgym.
