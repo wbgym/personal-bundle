@@ -1,0 +1,33 @@
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+	<?php if($this->isForm) : ?>	<p><a href="{{link_url::back}}">Zurück</a></p><?php endif; ?>
+	<h2><?php echo $this->h2 ?></h2>
+	<?php if ($this->error) : ?><div class="error"><?php echo $this->error; ?></div><?php endif; ?>
+	
+	<div class="hint"><?php echo $this->hint; ?></div>
+	<?php if(!$this->isForm) : ?>
+		<div class="settings_overview">
+			<?php foreach ($this->areas as $item) : ?>
+				<a class="edit" href="<?php echo $item['edit_href']; ?>">
+					<div class="<?php echo $item['name']; ?>">
+						<h3><?php echo $item['title']; ?></h3>
+						<?php echo $this->edit_title; ?>
+						<?php if($item['content']) echo $item['content']; ?>
+					</div>
+				</a>
+			<?php endforeach; ?>
+		</div>
+		
+	<?php else : ?>
+	
+	<form class="<?php echo $this->formName; ?>" action="<?php ?>" method="POST">
+		<input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formName; ?>" />
+		<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}" />
+		<?php foreach ($this->formElements as $item) : ?>
+			<?php if($item['label'] != '') : ?><fieldset><?php endif; ?>
+			<?php if($item['type'] == 'textarea') : ?><textarea <?php else : ?><input type="<?php echo $item['type']; ?>"<?php endif; ?> id="<?php echo $item['name']; ?>" placeholder="<?php echo $item['placeholder']; ?>" name="<?php echo $item['name']; ?>" <?php if($item['value'] && $item['type'] != 'textarea') : ?>value="<?php echo $item['value']; ?>"<?php endif; ?>><?php if($item['type'] == 'textarea') : ?><?php if($item['value'] != '') : ?><?php echo $item['value']; ?><?php endif; ?></textarea><?php endif; ?>
+			<?php if($item['label'] != '') : ?><label for="<?php echo $item['name']; ?>"><?php echo $item['label']; ?></label></fieldset><?php endif; ?>
+		<?php endforeach; ?>
+		<input type="submit" value="Fertig" />
+	</form>
+	<?php endif; ?>
+</div>

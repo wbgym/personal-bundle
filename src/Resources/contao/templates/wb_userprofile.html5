@@ -1,0 +1,120 @@
+<script type="text/javascript">
+	$(function() {
+		copyTextareas();
+	});
+	function copyTextareas(){
+		$('textarea').each(function() {
+			$(this).html( $(this).next('div').html());
+		});
+	}
+</script>
+
+<section class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+	
+	<!-- Profile Header -->
+	
+	<div class="profile-header">
+		<div class="inside">
+			<div class="avatar<?php if (!$this->avatar) : ?> icon user">
+				<?php else : ?>"><img src="<?php echo $this->avatar; ?>">
+				<?php if($this->isMe && !$this->isEditA && !$this->isEditP) : ?><p><a href="<?= $this->editUrlA ?>">Bild ändern</a></p><?php endif; ?>
+				<?php endif; ?>
+			</div>
+			<div class="title">
+				<div class="name<?php if($this->isMod) : ?> mod<?php endif; ?>"><?php echo $this->name; ?></div>
+				<div class="usertype"><?php echo $this->type; ?></div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Profile Info -->
+	
+	<?php if(!$this->isEditA) : ?>
+		<?php if($this->isEditP) : ?>
+			<form method="post" action="<?= $this->baseUrl ?>" onsubmit="return copyTextareas()">
+			<input type="hidden" name="REQUEST_TOKEN" value="{{REQUEST_TOKEN}}"></input>
+			<input type="hidden" name="FORM_SUBMIT" value="profile"></input>
+		<?php endif; ?>
+		<?php if($this->isMe && !$this->isEditP && !$this->isEditA) : ?><a class="edit_profile" href="<?php echo $this->editUrlP ?>">Bearbeiten</a><?php endif; ?>
+		<div class="profile-info table">
+			<div class="row">
+				<div class="clm header">E-Mail-Adresse</div>
+				<div class="clm"><?php echo $this->User->email; ?><?php if(!$this->isMe) : ?> <a class="writemail" target="_blank" href="mailto:<?php echo $this->User->email; ?>">E-Mail schreiben</a><?php endif; ?></div>
+			</div>
+			<?php foreach ($this->fields as $i => $v) : ?>
+			<div class="row">
+				<div class="clm header"><?php echo $i; ?></div>
+				<div class="clm">
+					<?php if($this->isEditP && $v['edit']) : ?>
+						<?php if($v['edit'] == 'privacy') : ?>
+							<input type="checkbox" name="privacy-<?= $v['id'] ?>" id="<?= $v['id'] ?>"<?php if($v['value'] == 1) : ?> checked="checked"<?php endif; ?>>
+								<label for="<?= $v['id'] ?>"><?= $v['label'] ?></label>
+							</input>
+						<?php elseif($v['edit'] == 'textarea') : ?>
+							<div class="textarea-input">
+								<textarea class="textInDiv" name="<?= $v['id'] ?>" style="display:none;"></textarea>
+								<div contenteditable="true" id="<?= $v['id'] ?>-cefield"><?= $v['value'] ?></div>
+							</div>
+						<?php endif; ?>
+					<?php else : ?>
+						<?php if($v['edit'] == 'privacy') : ?>
+							<?php if($this->isMe || $v['value'] == 1) : ?>
+								<?php if($v['value'] == 0) : ?><span class="privacy-private icon logout"></span><?php else : ?><span class="privacy-public"></span><?php endif; ?>
+								<?= $v['label'] ?>
+							<?php endif; ?>
+						<?php elseif ($v['edit'] != 'privacy') : ?><?= $v['value'] ?><?php endif; ?>
+					<?php endif; ?>
+				</div>
+			</div>
+			<?php endforeach; ?>
+		</div>
+		<?php if($this->isEditP) : ?>
+			<div class="submit-container">
+				<input type="submit" value="Speichern"></input> <a href="<?= $this->baseUrl ?>">Abbrechen</a>
+			</div>
+			</form>
+		<?php endif; ?>
+	<?php endif; ?>
+	
+	<!-- Avatar Upload -->
+	
+	<?php if($this->isEditA) : ?>
+		<?php //Depending Librarys
+		$GLOBALS['TL_JAVASCRIPT'][] = '//cdnjs.cloudflare.com/ajax/libs/croppie/2.4.0/croppie.min.js'; 
+		$GLOBALS['TL_CSS'][] = '//cdnjs.cloudflare.com/ajax/libs/croppie/2.4.0/croppie.min.css';
+		$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/wbgymuser/exif.js'; 
+		$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/wbgymuser/avatar_upload.js'; ?>
+		
+		<div class="avatar-upload">	
+			<div class="loader">
+				<a class="upload-btn">
+					<span>Wähle ein Bild aus...</span>
+					<form id="upload-form"><input type="file" id="upload" accept="image/*"></form>
+				</a>
+				<div class="progress"></div>
+			</div>
+			<div class="cropper" style="display:none">
+				<div class="image"></div>
+				<button class="show-preview">Vorschau</button>
+				<div class="preview" style="display:none"></div>
+				<form method="POST" action="<?= $this->baseUrl ?>" class="save_avatar">
+					<input type="hidden" name="REQUEST_TOKEN" value="{{REQUEST_TOKEN}}" />
+					<input type="hidden" name="FORM_SUBMIT" value="avatar" />
+					<input type="hidden" id="base64" name="base64" />
+					<input type="submit" style="display:none" class="save-button" value="Speichern" />
+				</form>
+				<button class="go-back" style="display:none">Weiter Zuschneiden</button>
+				<button class="abort">Anderes Bild auswählen</button>
+				<p class="privacy_info">
+					<?php if($this->type == 'Schüler') : ?>
+					Mit dem Upload erklärst du dich damit einverstanden, dass dein Profilbild für alle angemeldeten Schüler und Lehrer sichtbar ist.<br />
+					Dein Profilbild wird nicht öffentlich sichtbar sein.
+					<?php elseif($this->type == 'Lehrer' || $this->type == 'Referendar') : ?>
+					Mit dem Upload erklären Sie sich damit einverstanden, dass Ihr Profilbild auf dieser Website öffentlich sichtbar ist (z.B. über die Lehrerliste).
+					<?php endif; ?>
+				</p>
+			</div>
+			<?php if($this->isMe) : ?><p style="text-align:center"><a href="<?= $this->baseUrl ?>">Abbrechen</a></p><?php endif; ?>
+		</div>
+	<?php endif; ?>
+</section>

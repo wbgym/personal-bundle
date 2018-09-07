@@ -1,0 +1,39 @@
+<?php 
+	if($this->active) :
+		//Depending Librarys
+		$GLOBALS['TL_JAVASCRIPT'][] = '//cdnjs.cloudflare.com/ajax/libs/croppie/2.4.0/croppie.min.js'; 
+		$GLOBALS['TL_CSS'][] = '//cdnjs.cloudflare.com/ajax/libs/croppie/2.4.0/croppie.min.css';
+		$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/wbgymuser/exif.js'; 
+		$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/wbgymuser/avatar_upload.js';
+?>
+
+<section class="avatar-upload">
+	<div class="loader">
+		<a class="upload-btn">
+			<span>Wähle ein Bild aus...</span>
+			<form id="upload-form"><input type="file" id="upload" accept="image/*"></form>
+		</a>
+		<div class="progress"></div>
+	</div>
+	<div class="cropper" style="display:none">
+		<div class="image"></div>
+		<button class="show-preview">Vorschau</button>
+		<div class="preview" style="display:none"></div>
+		<form method="POST" class="save_avatar">
+			<input type="hidden" name="REQUEST_TOKEN" value="{{REQUEST_TOKEN}}" />
+			<input type="hidden" id="base64" name="base64" />
+			<input type="submit" style="display:none" class="save-button" value="Speichern" />
+		</form>
+		<button class="go-back" style="display:none">Weiter Zuschneiden</button>
+		<button class="abort">Anderes Bild auswählen</button>
+		<p class="privacy_info">
+			<?php if($this->userType == 'student') : ?>
+			Mit dem Upload erklärst du dich damit einverstanden, dass dein Profilbild für alle angemeldeten Schüler und Lehrer sichtbar ist.<br />
+			Dein Profilbild wird nicht öffentlich sichtbar sein.
+			<?php elseif($this->userType == 'teacher') : ?>
+			Mit dem Upload erklären Sie sich damit einverstanden, dass Ihr Profilbild auf dieser Website öffentlich sichtbar ist (z.B. über die Lehrerliste).
+			<?php endif; ?>
+		</p>
+	</div>
+</section>
+<?php endif; ?>

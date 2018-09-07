@@ -1,0 +1,16 @@
+<div class="user-area<?php if($this->mode == 0) : ?> login<?php else : ?> account<?php endif; ?>">
+
+<?php if($this->mode == 1) : ?>
+	<a class="pm ubutton show-messages icon messages"></a>
+	<a class="account ubutton show-login<?php if(!$this->avatar) : ?> icon user"><?php else : ?>"><img src="<?php echo $this->avatar; ?>" class="ubutton_avatar" /><?php endif; ?></a>
+</div>
+<div class="pm ubox messages-box" style="display:none;">
+	<div class="inside">
+		<span class="info">Keine Nachrichten vorhanden.</span>
+	</div>
+	<a class="all-messages" href="<?php echo $this->hrefAll; ?>">Alle Nachrichten zeigen</a>
+</div>
+<?php else : ?>
+	<a class="login ubutton show-login">Login</a>
+</div>
+<?php endif; ?>
