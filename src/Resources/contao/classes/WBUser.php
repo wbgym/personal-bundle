@@ -127,6 +127,11 @@ class WBUser extends \System {
 			
 			//Generate Webmail URL
 			$objTemplate->webmailHref = str_replace("{{email}}",$objUser->email,$objTemplate->wb_emailLink);
+
+			//Generate more URLs
+			$objTemplate->webuntisHref = $objTemplate->wb_webuntisLink;
+			$objTemplate->messengerHref = $objTemplate->wb_messengerLink;
+			$objTemplate->schulcloudHref = $objTemplate->wb_schulcloudLink;
 		}
 	}
 }
